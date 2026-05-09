@@ -46,6 +46,7 @@
     backdrop-filter: blur(14px);
     transition: background 0.3s, border-color 0.3s;
   }
+  /* Always show mobile btn on touch devices via media query */
   nav.scrolled {
     background: rgba(7,8,10,0.95);
     border-color: var(--border);
@@ -55,6 +56,7 @@
     font-family: 'Bebas Neue', sans-serif;
     font-size: 22px; letter-spacing: 4px;
     color: var(--text); text-decoration: none;
+    flex-shrink: 0;
   }
   .nav-logo span { color: var(--accent); }
   .nav-links { display: flex; gap: 28px; list-style: none; align-items: center; }
@@ -507,9 +509,9 @@
 
   /* RESPONSIVE */
   @media (max-width: 960px) {
-    nav { padding: 14px 20px; flex-wrap: nowrap; }
+    nav { padding: 14px 20px; flex-wrap: nowrap; justify-content: space-between; }
     .nav-links { display: none !important; }
-    .nav-mobile-btn { display: flex; }
+    .nav-mobile-btn { display: flex !important; flex-shrink: 0; }
     .hero, #contact { padding: 100px 24px 80px; }
     .section { padding: 64px 24px; }
     .portfolio-grid, .testi-grid, .articles-grid { grid-template-columns: repeat(2,1fr); }
@@ -2191,7 +2193,8 @@ function closeOnOverlay(e) { if (e.target === document.getElementById('modal')) 
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeArticle(); });
 
 // Nav always scrolled style in SPA
-document.getElementById('navbar').classList.add('scrolled');
+const nb = document.getElementById('navbar');
+if(nb) nb.classList.add('scrolled');
 
 // Skill bar animation
 const skillObserver = new IntersectionObserver(entries => {
