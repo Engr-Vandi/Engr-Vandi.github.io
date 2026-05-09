@@ -507,10 +507,9 @@
 
   /* RESPONSIVE */
   @media (max-width: 960px) {
-    nav { padding: 14px 20px; flex-wrap: wrap; gap: 10px; }
-    .nav-links { gap: 10px; }
-    .nav-links a { font-size: 9px; letter-spacing: 1.5px; }
-    .nav-links { display: flex; flex-wrap: wrap; gap: 12px; }
+    nav { padding: 14px 20px; flex-wrap: nowrap; }
+    .nav-links { display: none !important; }
+    .nav-mobile-btn { display: flex; }
     .hero, #contact { padding: 100px 24px 80px; }
     .section { padding: 72px 24px; }
     .trust-bar { padding: 20px 24px; gap: 24px; }
@@ -524,9 +523,28 @@
   }
   @media (max-width: 560px) {
     .portfolio-grid, .testi-grid, .articles-grid { grid-template-columns: 1fr; }
+    .web-portfolio-grid { grid-template-columns: 1fr; }
     .process-row { grid-template-columns: 1fr; }
     .hero-proof { flex-direction: column; }
     .proof-item { border-right: none !important; border-bottom: 1px solid var(--border); }
+    .section { padding: 56px 16px; }
+    .hero, #contact { padding: 90px 16px 60px; }
+    .hero-title { font-size: clamp(54px, 18vw, 90px); letter-spacing: 4px; }
+    .section-heading { font-size: clamp(28px, 8vw, 44px); }
+    .about-grid { gap: 28px; }
+    .about-photo { width: 150px; height: 150px; }
+    .services-grid { grid-template-columns: 1fr; }
+    .website-grid { grid-template-columns: 1fr; gap: 28px; }
+    .hero-actions { flex-direction: column; width: 100%; }
+    .hero-actions a, .hero-actions button { width: 100%; text-align: center; }
+    .contact-guarantee { flex-direction: column; text-align: center; padding: 16px; }
+    .work-tabs { flex-direction: column; }
+    .modal-box { padding: 28px 16px; }
+    .footer-links { display: none; }
+    footer { flex-direction: column; text-align: center; }
+    .contact-big { font-size: clamp(36px, 11vw, 70px); }
+    .contact-big-sub { font-size: clamp(20px, 6vw, 38px); }
+    .pkg-card { padding: 28px 20px; }
   }
 
   /* ═══════════ CREATIVE DESIGNER UPGRADES ═══════════ */
@@ -860,6 +878,52 @@
     .work-tab { flex: 1; text-align: center; }
   }
 
+
+  /* ═══ MOBILE NAV ═══ */
+  .nav-mobile-btn {
+    display: none;
+    flex-direction: column; justify-content: center; align-items: center;
+    width: 36px; height: 36px; cursor: pointer; gap: 5px;
+    border: 1px solid var(--border); padding: 6px;
+    transition: border-color 0.2s;
+  }
+  .nav-mobile-btn:hover { border-color: var(--accent); }
+  .nav-mobile-dot {
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--text); transition: background 0.2s;
+  }
+  .nav-mobile-btn:hover .nav-mobile-dot { background: var(--accent); }
+
+  .nav-dropdown {
+    display: none;
+    position: fixed; top: 65px; right: 20px;
+    background: rgba(12,14,18,0.98);
+    border: 1px solid var(--border);
+    backdrop-filter: blur(20px);
+    z-index: 600; min-width: 200px;
+    flex-direction: column; gap: 0;
+    animation: dropIn 0.25s ease forwards;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+  }
+  .nav-dropdown.open { display: flex; }
+  @keyframes dropIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .nav-dropdown a {
+    display: block; padding: 14px 20px;
+    font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--muted); text-decoration: none; font-weight: 500;
+    border-bottom: 1px solid var(--border);
+    transition: color 0.2s, background 0.2s;
+  }
+  .nav-dropdown a:last-child { border-bottom: none; }
+  .nav-dropdown a:hover, .nav-dropdown a.nav-active { color: var(--accent); background: rgba(212,98,42,0.05); }
+  .nav-dropdown .nav-cta {
+    color: var(--accent) !important;
+    font-weight: 700;
+  }
+
 </style>
 </head>
 <body>
@@ -881,6 +945,21 @@
     <li><a href="#" onclick="showPage('website',this)">Websites</a></li>
     <li><a href="#" onclick="showPage('contact',this)" class="nav-cta">Hire Me</a></li>
   </ul>
+  <div class="nav-mobile-btn" id="mobileMenuBtn" onclick="toggleMobileMenu()">
+    <div class="nav-mobile-dot"></div>
+    <div class="nav-mobile-dot"></div>
+    <div class="nav-mobile-dot"></div>
+  </div>
+  <!-- Mobile dropdown -->
+  <div class="nav-dropdown" id="mobileDropdown">
+    <a href="#" onclick="showPage('about');closeMobileMenu()" >About Me</a>
+    <a href="#" onclick="showPage('work');closeMobileMenu()">Work</a>
+    <a href="#" onclick="showPage('services');closeMobileMenu()">Services</a>
+    <a href="#" onclick="showPage('articles');closeMobileMenu()">Articles</a>
+    <a href="#" onclick="showPage('reviews');closeMobileMenu()">Reviews</a>
+    <a href="#" onclick="showPage('website');closeMobileMenu()">Websites</a>
+    <a href="#" onclick="showPage('contact');closeMobileMenu()" class="nav-cta">Hire Me</a>
+  </div>
 </nav>
 
 <div id="page-home" class="spa-page active">
@@ -927,7 +1006,7 @@
     <div class="guarantee-icon">⚡</div>
     <div class="guarantee-text">
       <strong>1-Hour Response Guarantee</strong>
-      <span>No reply within 1 hour? You get 50% off your order — guaranteed.</span>
+      <span>For thumbnail orders — no reply within 1 hour? You get 50% off. Guaranteed.</span>
     </div>
   </div>
 
@@ -1735,7 +1814,10 @@
       <!-- Booking form -->
       <div class="booking-col reveal">
         <div class="booking-label">⚡ Book a Project — Direct</div>
-        <form class="booking-form" id="bookingForm" onsubmit="submitBooking(event)">
+        <form class="booking-form" id="bookingForm" name="website-booking" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/success">
+          <input type="hidden" name="form-name" value="website-booking"/>
+          <input type="hidden" name="_to" value="engr.vandi@gmail.com"/>
+          <p style="display:none;"><input name="bot-field"/></p>
           <div class="form-field">
             <span class="field-label">Full Name</span>
             <input type="text" name="name" placeholder="Your name" required/>
@@ -1791,7 +1873,7 @@
       <div class="cg-icon">⚡</div>
       <div class="cg-text">
         <strong>1-Hour Response Guarantee</strong>
-        <span>If I don't reply within 1 hour of your message,<br/>you get <strong style="color:var(--accent);font-family:inherit;font-size:inherit;letter-spacing:inherit;">50% off</strong> your first order. No questions asked.</span>
+        <span>For thumbnail orders — if I don't reply within 1 hour,<br/>you get <strong style="color:var(--accent);font-family:inherit;font-size:inherit;letter-spacing:inherit;">50% off</strong> your first order. No questions asked.</span>
       </div>
     </div>
   </div>
@@ -2237,6 +2319,25 @@ function switchTab(id, btn) {
   document.getElementById('tab-' + id).classList.add('active');
   btn.classList.add('active');
 }
+
+/* ══ MOBILE MENU ══ */
+function toggleMobileMenu() {
+  const d = document.getElementById('mobileDropdown');
+  d.classList.toggle('open');
+}
+function closeMobileMenu() {
+  document.getElementById('mobileDropdown').classList.remove('open');
+}
+// Close on outside click
+document.addEventListener('click', function(e) {
+  const btn = document.getElementById('mobileMenuBtn');
+  const dd  = document.getElementById('mobileDropdown');
+  if (!btn.contains(e.target) && !dd.contains(e.target)) {
+    dd.classList.remove('open');
+  }
+});
+// Update dropdown active state in showPage
+const _origShowPage = showPage;
 
 </script>
 </body>
