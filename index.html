@@ -1814,6 +1814,12 @@
       <div class="booking-col reveal">
         <div class="booking-label">⚡ Book a Project — Direct</div>
         <form class="booking-form" id="bookingForm" onsubmit="submitBooking(event)">
+          <!-- Web3Forms config -->
+          <input type="hidden" name="access_key" value="986db3c1-3fa7-46e6-9bbb-e6b0c39f8c0e"/>
+          <input type="hidden" name="subject" value="New Project Booking — Victor Vandi Portfolio"/>
+          <input type="hidden" name="from_name" value="Victor Vandi Portfolio"/>
+          <!-- Anti-spam honeypot -->
+          <input type="checkbox" name="botcheck" style="display:none"/>
           <div class="form-field">
             <span class="field-label">Full Name</span>
             <input type="text" name="name" placeholder="Your name" required/>
@@ -1827,21 +1833,22 @@
             <input type="tel" name="phone" placeholder="+1 234 567 8900"/>
           </div>
           <div class="form-field">
-            <span class="field-label">Website Type</span>
-            <select name="type" required>
+            <span class="field-label">Service Needed</span>
+            <select name="service" required>
               <option value="" disabled selected>Select a service</option>
-              <option value="portfolio">Portfolio Site</option>
-              <option value="landing">Landing Page</option>
-              <option value="business">Business Website</option>
-              <option value="creator">Creator Site</option>
-              <option value="other">Other / Not sure yet</option>
+              <option value="YouTube Thumbnail Design">YouTube Thumbnail Design</option>
+              <option value="Portfolio Site">Portfolio Site</option>
+              <option value="Landing Page">Landing Page</option>
+              <option value="Business Website">Business Website</option>
+              <option value="Creator Site">Creator Site</option>
+              <option value="Other / Not sure yet">Other / Not sure yet</option>
             </select>
           </div>
           <div class="form-field">
             <span class="field-label">Project Details</span>
-            <textarea name="details" placeholder="Tell me about your project — what it's for, what you need, your timeline..." required></textarea>
+            <textarea name="message" placeholder="Tell me about your project — what it's for, what you need, your timeline..." required></textarea>
           </div>
-          <button type="submit" class="booking-submit">Send Booking Request →</button>
+          <button type="submit" class="booking-submit" id="submitBtn">Send Booking Request →</button>
         </form>
         <div class="booking-confirm" id="bookingConfirm">
           <div class="booking-confirm-icon">✅</div>
@@ -2525,19 +2532,48 @@ const proofObserver = new IntersectionObserver(entries=>{
 const proofEl = document.querySelector('.hero-proof');
 if(proofEl) proofObserver.observe(proofEl);
 
-/* ══ BOOKING FORM ══ */
-function submitBooking(e) {
+/* ══ BOOKING FORM — Web3Forms ══ */
+async function submitBooking(e) {
   e.preventDefault();
-  const form = document.getElementById('bookingForm');
+  const form    = document.getElementById('bookingForm');
   const confirm = document.getElementById('bookingConfirm');
-  // Animate button
-  const btn = form.querySelector('.booking-submit');
-  btn.textContent = 'Sending…';
+  const btn     = document.getElementById('submitBtn');
+
+  // Button loading state
+  btn.textContent  = 'Sending…';
   btn.style.opacity = '0.6';
-  setTimeout(() => {
-    form.style.display = 'none';
-    confirm.classList.add('show');
-  }, 800);
+  btn.disabled      = true;
+
+  try {
+    const formData = new FormData(form);
+    const object   = {};
+    formData.forEach((v, k) => { object[k] = v; });
+
+    const res  = await fetch('https://api.web3forms.com/submit', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body:    JSON.stringify(object),
+    });
+    const json = await res.json();
+
+    if(res.ok && json.success){
+      // ✅ Success — show confirmation
+      form.style.display = 'none';
+      confirm.classList.add('show');
+    } else {
+      // ⚠ Web3Forms returned an error
+      btn.textContent  = 'Try Again →';
+      btn.style.opacity = '1';
+      btn.disabled      = false;
+      alert('Something went wrong: ' + (json.message || 'Unknown error. Please try again.'));
+    }
+  } catch(err) {
+    // Network / fetch error
+    btn.textContent  = 'Try Again →';
+    btn.style.opacity = '1';
+    btn.disabled      = false;
+    alert('Network error. Please check your connection and try again.');
+  }
 }
 
 /* ══ SPA ROUTER ══ */
