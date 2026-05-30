@@ -398,6 +398,40 @@
     display: grid; grid-template-columns: repeat(3,1fr);
     gap: 2px; background: var(--border);
   }
+
+  /* ── Article category tabs ── */
+  .articles-tabs {
+    display: flex; gap: 2px; margin-bottom: 40px;
+    background: var(--border); width: fit-content;
+  }
+  .articles-tab {
+    background: var(--bg2); color: var(--muted);
+    font-family: 'DM Sans', sans-serif; font-size: 11px;
+    font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
+    padding: 12px 28px; border: none; cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+  .articles-tab.active { background: var(--accent); color: #fff; }
+  .articles-tab:hover:not(.active) { background: var(--bg3); color: var(--text); }
+  .articles-section { display: none; }
+  .articles-section.active { display: block; }
+  .articles-section-heading {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(20px,3vw,26px); letter-spacing: 4px;
+    color: var(--text); margin: 0 0 6px;
+  }
+  .articles-section-sub {
+    font-size: 13px; color: var(--muted); font-weight: 300;
+    line-height: 1.7; margin-bottom: 28px; max-width: 520px;
+  }
+  /* Web articles — green accent */
+  .article-card[data-cat="web"] .article-tag  { color: #14a85c; }
+  .article-card[data-cat="web"] .article-read { color: #14a85c; }
+  .article-card[data-cat="web"]:hover { border-left-color: #14a85c; }
+  @media (max-width: 960px) {
+    .articles-tabs { width: 100%; }
+    .articles-tab  { flex: 1; text-align: center; }
+  }
   .article-card {
     background: var(--bg2); padding: 32px 26px 28px;
     cursor: pointer; transition: background 0.2s;
@@ -512,7 +546,8 @@
     .nav-links { gap: 10px; }
     .nav-links a { font-size: 9px; letter-spacing: 1.5px; }
     .nav-links { display: flex; flex-wrap: wrap; gap: 12px; }
-    .hero, #contact { padding: 100px 24px 80px; }
+    .hero { padding: 100px 28px 72px; }
+    #contact { padding: 100px 24px 80px; }
     .section { padding: 72px 24px; }
     .trust-bar { padding: 20px 24px; gap: 24px; }
     .portfolio-grid, .testi-grid, .articles-grid { grid-template-columns: repeat(2,1fr); }
@@ -522,12 +557,37 @@
     footer { padding: 24px; }
     .hero-proof { flex-direction: row; }
     .proof-item { padding: 16px 20px; }
+    /* hero text scale */
+    .hero-title    { font-size: clamp(52px, 11vw, 128px); letter-spacing: 4px; }
+    .hero-subtitle { font-size: clamp(18px, 4vw, 40px);  letter-spacing: 6px; }
+    .hero-desc     { font-size: 14px; max-width: 480px; margin-bottom: 36px; }
+    .btn-primary, .btn-ghost { padding: 14px 28px; font-size: 10px; }
+    .guarantee-badge { flex-direction: row; padding: 14px 20px; gap: 12px; }
+    .articles-tabs { width: 100%; }
+    .articles-tab  { flex: 1; text-align: center; }
   }
-  @media (max-width: 560px) {
+  @media (max-width: 640px) {
+    .hero { padding: 90px 20px 64px; }
+    .hero-title    { font-size: clamp(44px, 14vw, 90px); letter-spacing: 2px; }
+    .hero-subtitle { font-size: clamp(14px, 4.5vw, 28px); letter-spacing: 4px; }
+    .hero-roles    { font-size: 13px; letter-spacing: 2px; }
+    .hero-desc     { font-size: 13.5px; margin-bottom: 28px; line-height: 1.75; }
+    .hero-actions  { flex-direction: column; align-items: center; gap: 10px; width: 100%; }
+    .btn-primary, .btn-ghost { width: 100%; max-width: 280px; text-align: center; padding: 16px 20px; }
+    .hero-badge    { font-size: 9px; letter-spacing: 1.5px; padding: 5px 12px; margin-bottom: 22px; }
+    .guarantee-badge { margin-top: 16px; padding: 12px 16px; font-size: 12px; }
+    .cg-text strong { font-size: 12px; }
+    .home-web-teaser { gap: 8px; }
+    .teaser-text { font-size: 11px; }
     .portfolio-grid, .testi-grid, .articles-grid { grid-template-columns: 1fr; }
     .process-row { grid-template-columns: 1fr; }
     .hero-proof { flex-direction: column; }
     .proof-item { border-right: none !important; border-bottom: 1px solid var(--border); }
+  }
+  @media (max-width: 400px) {
+    .hero { padding: 80px 16px 56px; }
+    .hero-title { font-size: clamp(40px, 16vw, 72px); }
+    .section { padding: 56px 16px; }
   }
 
   /* ═══════════ CREATIVE DESIGNER UPGRADES ═══════════ */
@@ -555,63 +615,100 @@
   }
   #hero-canvas canvas { display: block; width: 100% !important; height: 100% !important; }
 
-  /* ── Hero element parallax layers ── */
+  /* ── Hero element depth layers ── */
   .hero > * { position: relative; z-index: 2; }
-  .hero-badge,
-  .hero-title,
-  .hero-subtitle,
-  .hero-roles,
-  .hero-desc,
-  .hero-proof,
-  .hero-actions,
-  .guarantee-badge,
-  .home-web-teaser,
-  .teaser-btn {
-    will-change: transform;
-    transition: transform 0.12s ease-out;
+  .hero-badge, .hero-title, .hero-subtitle, .hero-roles,
+  .hero-desc, .hero-actions, .guarantee-badge,
+  .home-web-teaser, .teaser-btn { will-change: transform; }
+
+  /* ── Keyframe animations ── */
+  @keyframes heroFadeUp {
+    from { opacity:0; transform:translateY(38px) scale(0.96); filter:blur(3px); }
+    to   { opacity:1; transform:translateY(0)    scale(1);    filter:blur(0); }
+  }
+  @keyframes heroPulseGlow {
+    0%,100% { text-shadow: 0 0 0 rgba(212,98,42,0); }
+    50%     { text-shadow: 0 0 28px rgba(212,98,42,0.32), 0 0 56px rgba(240,168,64,0.14); }
+  }
+  @keyframes heroSubGlow {
+    0%,100% { text-shadow: none; }
+    50%     { text-shadow: 0 0 20px rgba(212,98,42,0.45), 0 0 6px rgba(240,168,64,0.25); }
+  }
+  @keyframes heroBadgePulse {
+    0%,100% { box-shadow:none; border-color:rgba(255,255,255,0.08); }
+    50%     { box-shadow:0 0 16px 1px rgba(212,98,42,0.16); border-color:rgba(212,98,42,0.38); }
+  }
+  @keyframes heroScanLine {
+    0%   { top:-2px; opacity:0; }
+    6%   { opacity:1; }
+    94%  { opacity:1; }
+    100% { top:100%; opacity:0; }
+  }
+  @keyframes heroFloat {
+    0%,100% { transform:translateY(0); }
+    50%     { transform:translateY(-8px); }
+  }
+  @keyframes heroCTAShimmer {
+    from { background-position:-200% center; }
+    to   { background-position:200% center; }
   }
 
-  /* 3D glow cursor ring (injected by JS) */
+  /* ── Per-element entrance + idle animations ── */
+  .hero-badge     { animation: heroFadeUp .9s .1s both, heroBadgePulse 3.5s 1.8s ease-in-out infinite; }
+  .hero-title     { animation: heroFadeUp .9s .28s both, heroPulseGlow 4.5s 2s ease-in-out infinite; }
+  .hero-subtitle  { animation: heroFadeUp .9s .42s both, heroSubGlow 5s 2.5s ease-in-out infinite; }
+  .hero-roles     { animation: heroFadeUp .9s .54s both; }
+  .hero-desc      { animation: heroFadeUp .9s .66s both; }
+  .hero-actions   { animation: heroFadeUp .9s .80s both; }
+  .guarantee-badge{ animation: heroFadeUp .9s .94s both, heroFloat 4s 2s ease-in-out infinite; }
+  .home-web-teaser{ animation: heroFadeUp .9s 1.08s both; }
+  .teaser-btn     { animation: heroFadeUp .9s 1.22s both; }
+
+  /* ── Button shimmer on hover ── */
+  .btn-primary {
+    background-size: 200% auto;
+    background-image: linear-gradient(90deg,var(--accent) 0%,#f0a840 40%,var(--accent) 60%,var(--accent) 100%);
+  }
+  .btn-primary:hover { animation: heroCTAShimmer 1.1s linear; }
+  .guarantee-badge:hover {
+    box-shadow: 0 0 22px rgba(212,98,42,0.22) !important;
+    border-color: rgba(212,98,42,0.45) !important;
+  }
+
+  /* ── Injected UI overlays ── */
   #hero-cursor-glow {
-    position: absolute;
-    width: 280px; height: 280px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(212,98,42,0.12) 0%, transparent 70%);
-    pointer-events: none;
-    z-index: 1;
-    transform: translate(-50%, -50%);
-    transition: left 0.15s ease-out, top 0.15s ease-out;
-    mix-blend-mode: screen;
+    position: absolute; width:340px; height:340px; border-radius:50%;
+    background: radial-gradient(circle,rgba(212,98,42,.10) 0%,rgba(240,168,64,.05) 40%,transparent 70%);
+    pointer-events:none; z-index:1;
+    transform:translate(-50%,-50%);
+    transition: left .18s ease-out, top .18s ease-out, opacity .4s;
+    mix-blend-mode:screen;
   }
-
-  /* Active frame indicator (injected by JS) */
+  #hero-scan-line {
+    position:absolute; left:0; right:0; height:1px; top:0;
+    background: linear-gradient(90deg,transparent 0%,rgba(212,98,42,.55) 30%,rgba(240,168,64,.8) 50%,rgba(212,98,42,.55) 70%,transparent 100%);
+    box-shadow: 0 0 10px rgba(212,98,42,.45), 0 0 22px rgba(240,168,64,.18);
+    pointer-events:none; z-index:3;
+    animation: heroScanLine 7s 2.5s ease-in-out infinite;
+  }
   #hero-frame-label {
-    position: absolute;
-    bottom: 100px; left: 50%;
-    transform: translateX(-50%);
-    font-size: 9px; letter-spacing: 3px;
-    text-transform: uppercase; color: var(--accent);
-    opacity: 0; z-index: 3;
-    transition: opacity 0.5s;
-    pointer-events: none;
+    position:absolute; bottom:100px; left:50%;
+    transform:translateX(-50%);
+    font-size:9px; letter-spacing:3px; text-transform:uppercase;
+    color:var(--accent); opacity:0; z-index:3;
+    transition:opacity .5s; pointer-events:none;
   }
 
-  /* Mobile: reduce motion, keep 3D bg */
-  @media (max-width: 640px) {
-    .hero { padding: 100px 20px 70px; }
-    .hero-badge,
-    .hero-title,
-    .hero-subtitle,
-    .hero-roles,
-    .hero-desc,
-    .hero-proof,
-    .hero-actions,
-    .guarantee-badge,
-    .home-web-teaser,
-    .teaser-btn {
-      transition: none;
-    }
-    #hero-cursor-glow { display: none; }
+  /* ── Mobile ── */
+  @media (max-width:640px) {
+    .hero { padding:100px 20px 70px; }
+    #hero-cursor-glow, #hero-scan-line { display:none; }
+  }
+  @media (prefers-reduced-motion:reduce) {
+    .hero-badge,.hero-title,.hero-subtitle,.hero-roles,
+    .hero-desc,.hero-actions,.guarantee-badge,
+    .home-web-teaser,.teaser-btn { animation:none !important; opacity:1 !important; }
+    #hero-scan-line { display:none; }
   }
 
   /* Glitch effect on name */
@@ -949,6 +1046,7 @@
 <!-- HERO -->
 <section class="hero">
   <div class="hero-bg"></div>
+  <div id="hero-scan-line"></div>
   <div class="hero-badge">
     <div class="hero-badge-dot"></div>
     Available · Top Rated · 96% Job Success Score
@@ -959,28 +1057,7 @@
   <p class="hero-desc">
     I help YouTube channels, media agencies, and content studios increase click-through rates with bold, conversion-driven thumbnail design. Every project is a business deliverable — not just a graphic.
   </p>
-  <div class="hero-proof">
-    <div class="proof-item">
-      <div class="proof-num">96%</div>
-      <div class="proof-label">Job Success Score</div>
-    </div>
-    <div class="proof-item">
-      <div class="proof-num">80+</div>
-      <div class="proof-label">Projects Done</div>
-    </div>
-    <div class="proof-item">
-      <div class="proof-num">4.3 ★</div>
-      <div class="proof-label">Client Rating</div>
-    </div>
-    <div class="proof-item">
-      <div class="proof-num">24H</div>
-      <div class="proof-label">Avg Turnaround</div>
-    </div>
-    <div class="proof-item" style="border-right:none">
-      <div class="proof-num">11%</div>
-      <div class="proof-label">Avg CTR Lift</div>
-    </div>
-  </div>
+
   <div class="hero-actions">
     <a href="https://www.fiverr.com" target="_blank" class="btn-primary">Order on Fiverr →</a>
     <a href="https://www.upwork.com" target="_blank" class="btn-ghost">Hire on Upwork</a>
@@ -1526,9 +1603,19 @@
 <section id="articles">
   <div class="section">
     <span class="section-tag reveal">Free Knowledge</span>
-    <h2 class="section-heading reveal">THUMBNAIL MASTERY</h2>
-    <p class="articles-intro reveal">Here are very useful nuggets I've learned designing thumbnails for hundreds of channels — Articles covering the psychology, the technique, and the business of clicks. Free for every creator reading this.</p>
-    <div class="articles-grid reveal">
+    <h2 class="section-heading reveal">ARTICLES</h2>
+    <p class="articles-intro reveal">Deep knowledge from building real channels and real websites — pick your category.</p>
+
+    <div class="articles-tabs reveal">
+      <button class="articles-tab active" onclick="switchArticleTab(this,'thumbnails')">🎯 Thumbnail Design</button>
+      <button class="articles-tab" onclick="switchArticleTab(this,'web')">🌐 Web Strategy</button>
+    </div>
+
+    <!-- THUMBNAIL ARTICLES -->
+    <div class="articles-section active" id="articles-thumbnails">
+      <h3 class="articles-section-heading">THUMBNAIL MASTERY</h3>
+      <p class="articles-section-sub">The psychology, technique, and business of clicks — free for every creator reading this.</p>
+      <div class="articles-grid">
 
       <div class="article-card" onclick="openArticle(0)">
         <div class="article-tag">Strategy</div>
@@ -1767,7 +1854,88 @@
         <button class="article-read">Read Article →</button>
       </div>
 
-    </div>
+      </div><!-- /articles-grid thumbnails -->
+    </div><!-- /articles-section thumbnails -->
+
+    <!-- WEB ARTICLES -->
+    <div class="articles-section" id="articles-web">
+      <h3 class="articles-section-heading">WEB STRATEGY</h3>
+      <p class="articles-section-sub">What makes a website actually work — from conversion to performance to why beautiful isn't enough.</p>
+      <div class="articles-grid">
+
+      <div class="article-card" data-cat="web" onclick="openArticle(34)">
+        <div class="article-tag">Web Strategy</div>
+        <div class="article-title">YOUR WEBSITE IS YOUR BEST SALESPERSON — AND IT NEVER SLEEPS</div>
+        <p class="article-excerpt">A great salesperson closes deals, answers questions, and builds trust. A great website does all three at 3am without you lifting a finger. Most businesses don't treat it that way.</p>
+        <button class="article-read">Read Article →</button>
+      </div>
+
+      <div class="article-card" data-cat="web" onclick="openArticle(35)">
+        <div class="article-tag">UX</div>
+        <div class="article-title">THE FIRST 5 SECONDS: HOW VISITORS JUDGE YOUR ENTIRE BUSINESS IN ONE GLANCE</div>
+        <p class="article-excerpt">Users form an opinion about your website in 50 milliseconds. Before they read a word, a decision is already forming. Here's what they're reacting to and how to control it.</p>
+        <button class="article-read">Read Article →</button>
+      </div>
+
+      <div class="article-card" data-cat="web" onclick="openArticle(36)">
+        <div class="article-tag">Performance</div>
+        <div class="article-title">PAGE SPEED IS NOT A TECH PROBLEM — IT'S A REVENUE PROBLEM</div>
+        <p class="article-excerpt">A one-second delay in load time reduces conversions by up to 7%. Most business owners treat speed as an IT issue. It's actually a sales issue — and a fixable one.</p>
+        <button class="article-read">Read Article →</button>
+      </div>
+
+      <div class="article-card" data-cat="web" onclick="openArticle(37)">
+        <div class="article-tag">SEO</div>
+        <div class="article-title">SEO IS NOT MAGIC: WHAT ACTUALLY MOVES YOU UP IN GOOGLE</div>
+        <p class="article-excerpt">Search engine optimisation has a reputation for mystery and manipulation. The truth is simpler and more achievable — if you understand what Google is actually trying to do.</p>
+        <button class="article-read">Read Article →</button>
+      </div>
+
+      <div class="article-card" data-cat="web" onclick="openArticle(38)">
+        <div class="article-tag">Conversion</div>
+        <div class="article-title">THE ANATOMY OF A HIGH-CONVERTING LANDING PAGE</div>
+        <p class="article-excerpt">A landing page is the most important single page you'll ever build. It has one job: convert a visitor into a lead or customer. Here's every element that makes or breaks it.</p>
+        <button class="article-read">Read Article →</button>
+      </div>
+
+      <div class="article-card" data-cat="web" onclick="openArticle(39)">
+        <div class="article-tag">Web Strategy</div>
+        <div class="article-title">A BEAUTIFUL WEBSITE THAT DOESN'T WORK IS JUST EXPENSIVE ART</div>
+        <p class="article-excerpt">Stunning design with broken forms, slow load times, and confusing navigation doesn't just fail to convert — it actively destroys trust. Function must come before aesthetics, always.</p>
+        <button class="article-read">Read Article →</button>
+      </div>
+
+      <div class="article-card" data-cat="web" onclick="openArticle(40)">
+        <div class="article-tag">Web Strategy</div>
+        <div class="article-title">WHY FUNCTIONALITY BEATS PURE DESIGN FOR REAL BUSINESS GROWTH</div>
+        <p class="article-excerpt">Award-winning websites that don't generate leads, bookings, or sales are failures. Here's the shift in thinking that separates websites that look impressive from websites that actually work.</p>
+        <button class="article-read">Read Article →</button>
+      </div>
+
+      <div class="article-card" data-cat="web" onclick="openArticle(41)">
+        <div class="article-tag">Web Strategy</div>
+        <div class="article-title">THE REAL COST OF A SLOW, BROKEN, OR CONFUSING WEBSITE</div>
+        <p class="article-excerpt">A bad website doesn't just fail to attract customers — it actively sends them to your competitors. The hidden cost of a dysfunctional site is almost always larger than the cost of fixing it.</p>
+        <button class="article-read">Read Article →</button>
+      </div>
+
+      <div class="article-card" data-cat="web" onclick="openArticle(42)">
+        <div class="article-tag">Web Strategy</div>
+        <div class="article-title">MOBILE-FIRST IS NOT A TREND — IT'S A BUSINESS REQUIREMENT</div>
+        <p class="article-excerpt">Over 60% of web traffic is mobile. A site that works perfectly on desktop but breaks on a phone is a site that fails the majority of its visitors every single day.</p>
+        <button class="article-read">Read Article →</button>
+      </div>
+
+      <div class="article-card" data-cat="web" onclick="openArticle(43)">
+        <div class="article-tag">Web Strategy</div>
+        <div class="article-title">CONVERSION RATE: THE ONE NUMBER THAT PROVES YOUR WEBSITE ACTUALLY WORKS</div>
+        <p class="article-excerpt">Traffic without conversion is just noise. Conversion rate tells you the honest truth about whether your website is doing its job — and what to fix if it isn't.</p>
+        <button class="article-read">Read Article →</button>
+      </div>
+
+      </div><!-- /articles-grid web -->
+    </div><!-- /articles-section web -->
+
   </div>
 </section>
 
@@ -1904,7 +2072,7 @@
     <li><a href="https://www.fiverr.com" target="_blank">Fiverr</a></li>
     <li><a href="https://www.upwork.com" target="_blank">Upwork</a></li>
   </ul>
-  <p class="footer-copy">© 2025 Victor Vandi &nbsp;·&nbsp; All rights reserved.</p>
+  <p class="footer-copy">© 2026 Victor Vandi &nbsp;·&nbsp; All rights reserved.</p>
 </footer>
 
 <!-- ARTICLE MODAL -->
@@ -2055,6 +2223,46 @@ const articles = [
   {
     tag:"A/B Testing",title:"How to Use A/B Testing to Revive Old Videos That Stopped Performing",meta:"By Victor Vandi · 7 min read · A/B Testing",
     body:`<p>Your back catalogue is one of the most underused assets on your channel. Older videos that have gone quiet — sitting at 15,000 views with no new traffic — are not necessarily dead. They may just have the wrong thumbnail. A strategic A/B test can restart an old video's algorithm momentum entirely.</p><p>Here's why this works: YouTube's algorithm never fully stops evaluating your content. It continues showing your videos to new audiences periodically, testing whether they perform. If the CTR is too low, the video gets shown less. <strong>Improving the thumbnail raises the CTR, which signals to the algorithm that the video is worth distributing again</strong> — and distribution picks back up.</p><div class="highlight">"I've seen videos stuck at 15K views for months hit 120K after a single thumbnail swap. The content didn't change. The packaging did."</div><p>The approach for testing old videos is slightly different from new ones. For new uploads, you're optimising within a launch window where early performance matters most. For old videos, you're playing a longer game — testing over weeks rather than days, and looking for a sustained lift in impressions rather than a spike.</p><h3>Which Old Videos to Test First</h3><p>Prioritise videos that have <strong>high search volume topics but low CTR</strong> — you can check this in YouTube Studio Analytics under the Reach tab. These are videos where the content is what people are searching for, but the thumbnail isn't convincing them to click. That gap is exactly what a better thumbnail can fix.</p><h3>What to Test on Old Videos</h3><p>Start with the biggest possible visual change: if the original uses a wide shot, test a close-up face. If the original has no text, test adding three words. If the original is warm-toned, test a cool palette. You're looking for a meaningful shift in performance, not a marginal improvement — so make the variants genuinely different.</p><p>YouTube recommends testing older videos first precisely because the impact to your channel's live performance is lower. Use that lower-risk environment to learn, then apply those lessons to your new uploads where the stakes are higher.</p>`
+  },
+  {
+    tag:"Web Strategy",title:"Your Website Is Your Best Salesperson — And It Never Sleeps",meta:"By Victor Vandi · 5 min read · Web Strategy",
+    body:`<p>Think about what a great salesperson does: they answer questions, overcome objections, communicate value, and guide a prospect toward a decision — all without you being in the room. A great website does exactly the same thing, at any hour, for any number of visitors simultaneously.</p><p>The difference is that a salesperson gets tired, takes days off, and has bad days. A well-built website doesn't. It delivers the same pitch, the same quality of information, and the same conversion experience at 3am on a Sunday as it does at 10am on a Monday.</p><div class="highlight">"Most businesses spend enormous energy hiring and training people to sell — then build a website that actively undermines them. Your website is either selling for you or working against you. There's no neutral."</div><h3>What a Sales-Focused Website Actually Does</h3><p><strong>It answers questions before they're asked.</strong> Every visitor arrives with objections — Is this trustworthy? Is it worth the price? Will it work for my situation? A website that anticipates and answers these questions removes the friction between interest and action.</p><p><strong>It communicates value immediately.</strong> Within five seconds of landing on your site, a visitor should understand exactly what you do, who it's for, and why they should care. If that clarity isn't there, they leave — and they don't come back.</p><p><strong>It builds trust through evidence.</strong> Testimonials, case studies, real results, and social proof aren't decorative — they're the equivalent of a reference check. They answer the question every visitor is silently asking: "Has this worked for someone like me?"</p><h3>The Cost of Getting It Wrong</h3><p>A website that doesn't convert isn't just passive — it's actively losing you business. Every visitor who arrives, gets confused, and leaves is a lead your competitors are now free to close. The cost of a non-performing website isn't just the money spent building it — it's every sale it failed to generate.</p>`
+  },
+  {
+    tag:"UX",title:"The First 5 Seconds: How Visitors Judge Your Entire Business in One Glance",meta:"By Victor Vandi · 4 min read · UX",
+    body:`<p>Research by Google found that users form an aesthetic judgment about a website in as little as 50 milliseconds — faster than a conscious thought can form. By the time someone has read your headline, a decision about whether to trust you is already half-made.</p><p>This isn't a design opinion. It's cognitive science. The human brain is a pattern-recognition machine, and it's constantly running background assessments: "Does this look legitimate? Is this the kind of place I want to do business with? Does this feel competent or amateur?"</p><div class="highlight">"Your website's first impression isn't formed by your content — it's formed by your visual credibility. Content gets read by people who already decided to stay."</div><h3>What Visitors Are Actually Reacting To</h3><p><strong>Visual hierarchy:</strong> Is there a clear flow from the most important element to the next? Or does the eye land randomly on a cluttered page with no clear center of gravity?</p><p><strong>Whitespace and breathing room:</strong> Crowded layouts feel anxious and untrustworthy. Spacious layouts feel confident and established. This isn't aesthetic preference — it's a legibility and trust signal.</p><p><strong>Typography confidence:</strong> Small, thin, hard-to-read fonts communicate uncertainty. Large, clear, well-spaced typography communicates authority.</p><p><strong>Colour consistency:</strong> A page that uses seven different colours with no system looks accidental. A page with two or three colours used deliberately looks intentional — and intentional reads as professional.</p><h3>The Practical Fix</h3><p>Before worrying about content, copy, or SEO, ask this: if a stranger landed on your homepage and had 5 seconds, would they know exactly what you do and want to stay? Print your homepage at phone size and look at it cold. The answer will be obvious.</p>`
+  },
+  {
+    tag:"Performance",title:"Page Speed Is Not a Tech Problem — It's a Revenue Problem",meta:"By Victor Vandi · 5 min read · Performance",
+    body:`<p>Amazon found that every 100 milliseconds of additional load time cost them 1% in revenue. Google's own data shows that as page load time increases from 1 second to 3 seconds, the probability of a visitor bouncing increases by 32%. At 5 seconds, that bounce probability jumps by 90%.</p><p>These aren't edge cases or hypotheticals. They're documented patterns across millions of user sessions. Yet most business owners treat website speed as a technical concern — something for developers to manage — rather than a direct driver of revenue.</p><div class="highlight">"Your website's speed is a product decision, not a technical one. Every second of delay is a deliberate choice to make your visitors' experience worse — and your conversion rate lower."</div><h3>Why Speed Feels Like a Technical Problem But Isn't</h3><p>Speed is caused by technical factors: image sizes, server response times, unoptimised code, too many third-party scripts. But the business decision is upstream: how much do you invest in solving it? A fast website requires intentional choices — using a quality host, compressing images properly, writing lean code, avoiding bloated page builders.</p><p>Those are business decisions disguised as technical ones. The cost of not making them is paid in conversion rates, not in error logs.</p><h3>What Good Speed Looks Like</h3><p>A well-built website should load in under 2 seconds on a standard mobile connection. Google's Core Web Vitals — Largest Contentful Paint, First Input Delay, and Cumulative Layout Shift — are measurable targets. A site that passes these tests is competitive. One that fails is quietly losing to every competitor whose site loads faster.</p><p>The test is free: run your site through Google PageSpeed Insights right now. The number you see is a direct proxy for how much friction you're creating before a visitor even reads your first word.</p>`
+  },
+  {
+    tag:"SEO",title:"SEO Is Not Magic: What Actually Moves You Up in Google",meta:"By Victor Vandi · 6 min read · SEO",
+    body:`<p>Search Engine Optimisation has a reputation for being mysterious, manipulative, and constantly changing. That reputation exists because a lot of people selling SEO services benefit from the mystery. The actual principles are simpler, more stable, and more achievable than the industry often admits.</p><p>Google's core goal hasn't changed in twenty years: return the most relevant, trustworthy, useful result for any given search. Everything Google's algorithm does is in service of that goal. Understanding that goal is most of what you need to know about SEO.</p><div class="highlight">"If your page genuinely answers the question better than anyone else's page, Google's incentive is to show it first. SEO is mostly about making sure Google can find, understand, and trust what you've already built."</div><h3>The Three Things That Actually Matter</h3><p><strong>Relevance:</strong> Does your page clearly address the topic someone is searching for? This means using the language your audience actually uses, covering the topic with genuine depth, and structuring content so Google can understand what it's about.</p><p><strong>Authority:</strong> Does Google have reason to trust your site? Authority is built through links from other credible sites, consistent publication of useful content, and a domain history that signals legitimacy. It's slow to build and hard to fake.</p><p><strong>Technical accessibility:</strong> Can Google actually crawl and index your pages? Fast load times, mobile-friendly design, clean code, and proper sitemap structure all fall under this category. Most well-built modern websites handle this automatically.</p><h3>What Doesn't Work</h3><p>Keyword stuffing, buying backlinks, hiding text, and other manipulation tactics either don't work or actively result in penalties. Google's ability to detect these approaches has improved every year. The ROI on legitimate SEO — genuinely useful content, well-built pages, real audience value — consistently outperforms shortcut tactics over any meaningful time horizon.</p>`
+  },
+  {
+    tag:"Conversion",title:"The Anatomy of a High-Converting Landing Page",meta:"By Victor Vandi · 6 min read · Conversion",
+    body:`<p>A landing page has one job: convert a visitor into a lead or a customer. Not inform. Not impress. Convert. Every design decision, every word of copy, every button placement should be evaluated against that single criterion.</p><p>Most landing pages fail because they try to do too many things. They include navigation that leads visitors away, sections that aren't relevant to the conversion goal, and CTAs buried so far down the page that only the most determined visitors find them.</p><div class="highlight">"A landing page is the most important single page you'll ever build. It should be so focused that removing any element would reduce conversion — and so clear that a distracted person on a phone can understand it in under 10 seconds."</div><h3>The Elements That Drive Conversion</h3><p><strong>The headline:</strong> One sentence. It must answer "what is this and why should I care?" immediately. If your headline requires context to understand, rewrite it.</p><p><strong>The subheadline:</strong> Expands the headline with the specific promise or benefit. Where the headline creates interest, the subheadline earns the next scroll.</p><p><strong>The primary CTA:</strong> Above the fold, always. One action, clearly labelled. "Get Started" is weak. "Book Your Free Call" is specific and carries a value promise.</p><p><strong>Social proof:</strong> Testimonials, client logos, review counts, case study results. Positioned near the CTA, not buried at the bottom. Social proof reduces the risk a visitor perceives in taking action.</p><p><strong>Objection handling:</strong> Every visitor has objections — price, time commitment, whether it'll work for them. The landing page's job is to identify the most common objections and answer them directly, before the visitor has a chance to leave.</p><h3>What to Remove</h3><p>Navigation menus. Sidebar content. Social media links. Anything that can pull a visitor away from the conversion action. A landing page with outbound navigation is a landing page leaking leads.</p>`
+  },
+  {
+    tag:"Web Strategy",title:"A Beautiful Website That Doesn't Work Is Just Expensive Art",meta:"By Victor Vandi · 5 min read · Web Strategy",
+    body:`<p>There's a category of website that wins design awards, looks stunning in a portfolio, and generates almost no business. It has breathtaking visuals, intricate animations, and careful typography. It also has a contact form that doesn't submit, a mobile layout that breaks, and a load time that drives visitors away before the first image finishes rendering.</p><p>This is expensive art. It may accurately represent the aesthetic vision of the people who built it. It does not function as a business tool.</p><div class="highlight">"Design without function is decoration. In business, decoration doesn't pay the bills. Conversion does."</div><h3>Where Beautiful-But-Broken Websites Come From</h3><p>They usually come from a design process that prioritises how a site looks in a static mockup over how it behaves in a real browser on a real device with a real user trying to accomplish something specific. Designers who have never done user testing often build for screenshots, not for use.</p><p>The result is a site that looks perfect in a Figma file and performs poorly in practice — because Figma files don't have to load in 2 seconds, don't have to work on a 4G connection in Lagos, and don't have to guide a confused first-time visitor to a CTA they can find.</p><h3>The Standard That Actually Matters</h3><p>A website works when real users — not the people who built it — can accomplish their goals without friction. They can find what they need, understand what the business offers, and take action without confusion or technical failure. That standard is measurable through user testing, analytics, and conversion data. It's harder to achieve than a beautiful static design. It's also the only standard that generates a return on investment.</p>`
+  },
+  {
+    tag:"Web Strategy",title:"Why Functionality Beats Pure Design for Real Business Growth",meta:"By Victor Vandi · 5 min read · Web Strategy",
+    body:`<p>A website that generates consistent leads with average visuals will always outperform a stunning website that generates none. This is obvious when stated directly, and yet the majority of website briefs prioritise "looking professional" or "standing out visually" over the functional requirements that actually drive business outcomes.</p><p>This isn't an argument against good design. Design matters enormously — it builds trust, communicates professionalism, and reduces friction. The argument is about priority: function must be the foundation on which design is built, not an afterthought once the visuals are approved.</p><div class="highlight">"A website that is fully functional and average-looking will outperform a broken website with stunning design every single time. Start with function. Layer design on top. Never reverse that order."</div><h3>What Function Actually Means</h3><p>A functional website does specific things reliably: it loads quickly on all devices, forms submit correctly, CTAs lead where they should, content is findable, and the path from landing to conversion is clear and unobstructed. None of these are design concerns — they're engineering and product concerns. But they are the ceiling on how much a beautiful design can achieve.</p><h3>The Test of a Functional Website</h3><p>Give your website to five people who have never seen it and ask them to complete a specific task — find the pricing, contact you, understand your services. Watch where they get confused, where they get stuck, where they give up. The problems they surface are functional problems. Fix those before you spend another hour on visual refinement. Design optimisation on a functionally broken website is waste.</p>`
+  },
+  {
+    tag:"Web Strategy",title:"The Real Cost of a Slow, Broken, or Confusing Website",meta:"By Victor Vandi · 4 min read · Web Strategy",
+    body:`<p>When a business owner looks at their website costs, they typically see: hosting fee, design fee, development fee, maintenance fee. What they almost never see is the cost of every visitor who arrived, couldn't find what they needed, and left — permanently.</p><p>That invisible cost is usually larger than all the visible ones combined. And unlike the visible costs, it compounds: a visitor who had a bad experience doesn't just leave — they form a lasting negative impression of the business, they don't recommend it, and they don't come back.</p><div class="highlight">"The cost of a bad website isn't in your invoice. It's in your analytics. Every bounce, every abandoned form, every visitor who left without converting is a number your P&L will never show you — but your competitors are collecting."</div><h3>The Three Ways a Website Loses You Money</h3><p><strong>Slow load times:</strong> For every second of load time above 2 seconds, conversion rates drop measurably. A 5-second load time can cost you more than 40% of visitors before they've seen a single word of your content.</p><p><strong>Broken functionality:</strong> Forms that don't submit. Buttons that don't click. Pages that 404. Each broken element doesn't just create friction — it signals incompetence. A broken website tells a visitor that attention to detail isn't a priority here, which immediately raises questions about the quality of the actual product or service.</p><p><strong>Confusing navigation:</strong> If a visitor can't find what they're looking for in under 3 clicks, they leave. Not because they're impatient, but because their time has value and your site is signalling that it doesn't respect it.</p><h3>Quantifying the Problem</h3><p>Run a simple calculation: how many visitors does your site receive per month? What percentage convert? What is each conversion worth? Now reduce your conversion rate by 30% — that's a conservative estimate of what a slow, broken, or confusing website costs. For most businesses, that number is significant enough to justify fixing the problem this week.</p>`
+  },
+  {
+    tag:"Web Strategy",title:"Mobile-First Is Not a Trend — It's a Business Requirement",meta:"By Victor Vandi · 4 min read · Web Strategy",
+    body:`<p>As of 2024, over 60% of all global web traffic comes from mobile devices. In Nigeria and across sub-Saharan Africa, that number is closer to 80%. The majority of the people who will ever visit your website will do so on a phone, often on a mobile data connection, often while doing something else at the same time.</p><p>A website that works perfectly on a desktop but breaks, compresses, overflows, or slows to a crawl on mobile is a website that is failing the majority of its visitors every day. That is not a small technical problem — it is a fundamental business failure.</p><div class="highlight">"Mobile-first isn't a design philosophy. It's an acknowledgment of reality: most of your visitors are on a phone. Build for them first, and treat desktop as the upgrade — not the other way around."</div><h3>What Mobile-First Actually Means</h3><p>It means designing and testing the mobile experience before the desktop experience. It means images that load efficiently on a 4G connection. It means tap targets large enough to hit with a thumb, text large enough to read without zooming, and layouts that don't require horizontal scrolling.</p><p>It also means accepting that some design elements that look great on a wide desktop screen simply don't translate to mobile — and making the disciplined choice to remove or redesign them rather than force them to fit.</p><h3>How to Test It</h3><p>Open your website on your own phone. Navigate it as a first-time visitor would — find your contact information, understand your pricing, try to submit a form. Time how long it takes to load. Note every moment of friction. That experience is what the majority of your visitors have every day. If it frustrates you, it's frustrating them — and they have competitors' sites one back-button away.</p>`
+  },
+  {
+    tag:"Web Strategy",title:"Conversion Rate: The One Number That Proves Your Website Actually Works",meta:"By Victor Vandi · 5 min read · Web Strategy",
+    body:`<p>A website can have beautiful design, strong SEO, consistent traffic, and still be failing. The number that reveals the truth is conversion rate: the percentage of visitors who take the action you want them to take. Everything else is context. Conversion rate is the verdict.</p><p>Most business owners don't know their website's conversion rate. They know their traffic numbers — monthly visitors, page views, sessions — because those numbers are visible and they tend to go up. Conversion rate requires more attention to find, and it often tells a less comfortable story.</p><div class="highlight">"Traffic is flattering. Conversion rate is honest. A thousand visitors a month who never convert are worth less than a hundred who do. Build for conversion, not for traffic."</div><h3>What Good Conversion Rates Look Like</h3><p>Average website conversion rates vary significantly by industry and goal type. For lead generation forms on service businesses, 2–5% is typical; well-optimised pages can reach 10–15%. E-commerce sites average 1–3%. If you don't know your current rate, calculating it is the first step: divide the number of conversions (form submissions, calls, purchases) by your total visitor count and multiply by 100.</p><h3>What Affects Conversion Rate</h3><p>Almost everything: load speed, clarity of the value proposition, quality of social proof, position and wording of CTAs, form length, mobile experience, and page layout all affect whether a visitor converts. This is why conversion rate optimisation is a discipline rather than a single fix — it's the ongoing process of identifying and removing the specific friction points that are costing you conversions.</p><h3>Why It's the Most Important Metric</h3><p>Because improving conversion rate is the highest-leverage action available to most businesses with an existing website. Doubling your traffic requires significant investment in marketing. Doubling your conversion rate requires understanding your visitors better — and that understanding is available in your existing analytics, right now, for free.</p>`
   }
 ];
 
@@ -2125,348 +2333,269 @@ window.addEventListener('scroll',()=>{
   prog.style.width = p+'%';
 });
 
-// ─── VICTOR VANDI — INTEGRATED 3D HERO ──────────────────────────────────────
+// ─── VICTOR VANDI — COMPLETE ANIMATED HERO ─────────────────────────────────
 (function initHero3D(){
-
   if(typeof THREE === 'undefined') return;
 
-  // ── Device detection ──────────────────────────────────────────────────────
-  const isMobile   = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)
-                     || window.innerWidth < 768;
-  const dpr        = Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2);
+  const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) || window.innerWidth < 768;
+  const dpr      = Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2);
+  const prefersRM= window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // ── Container & renderer ──────────────────────────────────────────────────
-  const container  = document.getElementById('hero-canvas');
+  const container = document.getElementById('hero-canvas');
   if(!container) return;
-
-  const renderer   = new THREE.WebGLRenderer({ antialias: !isMobile, alpha: true });
+  const renderer = new THREE.WebGLRenderer({ antialias: !isMobile, alpha: true });
   renderer.setPixelRatio(dpr);
   renderer.setClearColor(0x000000, 0);
-  renderer.setSize(container.offsetWidth || window.innerWidth,
-                   container.offsetHeight || window.innerHeight);
+  const W = container.offsetWidth || window.innerWidth;
+  const H = container.offsetHeight || window.innerHeight;
+  renderer.setSize(W, H);
   container.appendChild(renderer.domElement);
 
   const scene  = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(
-    isMobile ? 65 : 55,
-    (container.offsetWidth || window.innerWidth) / (container.offsetHeight || window.innerHeight),
-    0.1, 350
-  );
+  const camera = new THREE.PerspectiveCamera(isMobile ? 65 : 55, W / H, 0.1, 350);
   camera.position.set(0, 0, 0);
-
-  // ── Fog ───────────────────────────────────────────────────────────────────
   scene.fog = new THREE.FogExp2(0x07080a, isMobile ? 0.025 : 0.020);
 
-  // ── Brand colours ─────────────────────────────────────────────────────────
   const C_ORANGE = new THREE.Color(0xd4622a);
   const C_AMBER  = new THREE.Color(0xf0a840);
   const C_WHITE  = new THREE.Color(0xe8eaf0);
-  const C_DIM    = new THREE.Color(0x242836);
 
-  // ── THUMBNAIL FRAME CORRIDOR ──────────────────────────────────────────────
-  // 16:9 frames representing Victor's work, scattered along the Z tunnel.
-  const FRAME_DEFS = [
-    [-3.0,  0.5, -16,  0.32,  0.04, 1.0,  'solid'],
-    [ 3.2, -0.5, -24, -0.28,  0.0,  0.9,  'wire' ],
-    [-2.6,  1.4, -36,  0.24,  0.08, 1.05, 'solid'],
-    [ 3.5,  0.2, -46, -0.20,  0.0,  0.85, 'wire' ],
-    [-3.4, -0.6, -58,  0.36, -0.04, 1.0,  'solid'],
-    [ 2.8,  1.0, -68, -0.30,  0.0,  0.8,  'wire' ],
-    [-2.2,  0.0, -80,  0.18,  0.0,  1.2,  'solid'],
-    [ 3.8, -0.8, -92, -0.25,  0.05, 1.0,  'wire' ],
-    [-3.0,  0.9,-106,  0.30,  0.0,  0.95, 'solid'],
-    [ 2.6,  0.4,-118, -0.22,  0.0,  1.0,  'wire' ],
-    [ 0.0,  2.5,-130,  0.0,  -0.18, 1.3,  'solid'],
-    [-3.6, -0.3,-144,  0.35,  0.03, 1.0,  'wire' ],
-    [ 3.0,  0.6,-156, -0.28,  0.0,  0.9,  'solid'],
-    // mobile: only first 8 frames rendered (see filter below)
+  // ── THUMBNAIL FRAME CORRIDOR ─────────────────────────────────────────────
+  const ALL_FRAMES = [
+    [-3.0, 0.5,-16, 0.32, 0.04,1.00,'solid'],
+    [ 3.2,-0.5,-24,-0.28, 0.00,0.90,'wire' ],
+    [-2.6, 1.4,-36, 0.24, 0.08,1.05,'solid'],
+    [ 3.5, 0.2,-46,-0.20, 0.00,0.85,'wire' ],
+    [-3.4,-0.6,-58, 0.36,-0.04,1.00,'solid'],
+    [ 2.8, 1.0,-68,-0.30, 0.00,0.80,'wire' ],
+    [-2.2, 0.0,-80, 0.18, 0.00,1.20,'solid'],
+    [ 3.8,-0.8,-92,-0.25, 0.05,1.00,'wire' ],
+    [-3.0, 0.9,-106,0.30, 0.00,0.95,'solid'],
+    [ 2.6, 0.4,-118,-0.22,0.00,1.00,'wire' ],
+    [ 0.0, 2.5,-130,0.00,-0.18,1.30,'solid'],
+    [-3.6,-0.3,-144,0.35, 0.03,1.00,'wire' ],
+    [ 3.0, 0.6,-156,-0.28,0.00,0.90,'solid'],
   ];
-
-  const frameDefs = isMobile ? FRAME_DEFS.slice(0, 7) : FRAME_DEFS;
-  const frameObjects = [];  // store meshes for activation logic
+  const frameDefs    = isMobile ? ALL_FRAMES.slice(0,7) : ALL_FRAMES;
+  const frameObjects = [];
   const frameGroup   = new THREE.Group();
   scene.add(frameGroup);
 
-  frameDefs.forEach(([x, y, z, ry, rx, sc, type]) => {
-    const w = 1.78 * sc, h = sc;
-
+  frameDefs.forEach(function(fd){
+    var x=fd[0],y=fd[1],z=fd[2],ry=fd[3],rx=fd[4],sc=fd[5],type=fd[6];
+    var w=1.78*sc, h=sc;
     if(type === 'solid'){
-      const geo   = new THREE.PlaneGeometry(w, h);
-      const mat   = new THREE.MeshBasicMaterial({
-        color: C_ORANGE, transparent: true, opacity: 0.07, side: THREE.DoubleSide,
+      var geo = new THREE.PlaneGeometry(w,h);
+      var mat = new THREE.MeshBasicMaterial({color:C_ORANGE,transparent:true,opacity:0.07,side:THREE.DoubleSide});
+      var pl  = new THREE.Mesh(geo,mat);
+      pl.position.set(x,y,z); pl.rotation.set(rx,ry,0);
+      frameGroup.add(pl);
+      var em = new THREE.LineBasicMaterial({color:C_ORANGE,transparent:true,opacity:0.50});
+      pl.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo),em));
+      [[ w/2, h/2],[-(w/2), h/2],[ w/2,-(h/2)],[-(w/2),-(h/2)]].forEach(function(c){
+        var d=new THREE.Mesh(new THREE.SphereGeometry(0.015,4,4),new THREE.MeshBasicMaterial({color:C_AMBER}));
+        d.position.set(c[0],c[1],0.001); pl.add(d);
       });
-      const plane = new THREE.Mesh(geo, mat);
-      plane.position.set(x, y, z);
-      plane.rotation.set(rx, ry, 0);
-      frameGroup.add(plane);
-
-      // Border
-      const edgeMat = new THREE.LineBasicMaterial({ color: C_ORANGE, transparent: true, opacity: 0.50 });
-      const border  = new THREE.LineSegments(new THREE.EdgesGeometry(geo), edgeMat);
-      plane.add(border);
-
-      // Corner accent dots
-      [[w/2,h/2],[-(w/2),h/2],[w/2,-(h/2)],[-(w/2),-(h/2)]].forEach(([cx,cy])=>{
-        const d = new THREE.Mesh(
-          new THREE.SphereGeometry(0.015, 4, 4),
-          new THREE.MeshBasicMaterial({ color: C_AMBER })
-        );
-        d.position.set(cx, cy, 0.001);
-        plane.add(d);
-      });
-
-      // Centre play-button hint (▶ shape via triangle)
-      const tri = new THREE.Mesh(
-        new THREE.ConeGeometry(0.06, 0.10, 3),
-        new THREE.MeshBasicMaterial({ color: C_AMBER, transparent: true, opacity: 0.25 })
-      );
-      tri.rotation.z = -Math.PI / 2;
-      tri.position.set(0.02, 0, 0.001);
-      plane.add(tri);
-
-      frameObjects.push({ mesh: plane, borderMat: edgeMat, z, baseBorderOpacity: 0.50 });
-
+      var tri=new THREE.Mesh(new THREE.ConeGeometry(0.06,0.10,3),
+        new THREE.MeshBasicMaterial({color:C_AMBER,transparent:true,opacity:0.25}));
+      tri.rotation.z=-Math.PI/2; tri.position.set(0.02,0,0.001); pl.add(tri);
+      frameObjects.push({mesh:pl,mat:em,z:z,base:0.50});
     } else {
-      const geo    = new THREE.PlaneGeometry(w, h);
-      const mat    = new THREE.LineBasicMaterial({ color: C_AMBER, transparent: true, opacity: 0.25 });
-      const frame  = new THREE.LineSegments(new THREE.EdgesGeometry(geo), mat);
-      frame.position.set(x, y, z);
-      frame.rotation.set(rx, ry, 0);
-      frameGroup.add(frame);
-      frameObjects.push({ mesh: frame, borderMat: mat, z, baseBorderOpacity: 0.25 });
+      var geo2=new THREE.PlaneGeometry(w,h);
+      var fm=new THREE.LineBasicMaterial({color:C_AMBER,transparent:true,opacity:0.25});
+      var fr=new THREE.LineSegments(new THREE.EdgesGeometry(geo2),fm);
+      fr.position.set(x,y,z); fr.rotation.set(rx,ry,0);
+      frameGroup.add(fr);
+      frameObjects.push({mesh:fr,mat:fm,z:z,base:0.25});
     }
   });
+
+  // ── FLOATING ORBITAL ACCENTS ─────────────────────────────────────────────
+  var orbitals = [];
+  if(!isMobile){
+    var orbDefs = [
+      {geo:new THREE.OctahedronGeometry(0.08), x:-5.5,y: 2.0,z:-8,  col:C_ORANGE,spd:0.6},
+      {geo:new THREE.TetrahedronGeometry(0.07), x: 5.2,y: 1.5,z:-10, col:C_AMBER, spd:0.8},
+      {geo:new THREE.IcosahedronGeometry(0.06), x:-4.8,y:-2.0,z:-12, col:C_ORANGE,spd:0.5},
+      {geo:new THREE.OctahedronGeometry(0.05),  x: 4.5,y:-1.8,z:-7,  col:C_AMBER, spd:0.9},
+    ];
+    orbDefs.forEach(function(d){
+      var m=new THREE.Mesh(d.geo,new THREE.MeshBasicMaterial({color:d.col,wireframe:true,transparent:true,opacity:0.35}));
+      m.position.set(d.x,d.y,d.z);
+      m._spd=d.spd; m._origY=d.y;
+      scene.add(m); orbitals.push(m);
+    });
+  }
 
   // ── PARTICLE FIELD ────────────────────────────────────────────────────────
-  const N        = isMobile ? 900 : 1800;
-  const pGeo     = new THREE.BufferGeometry();
-  const pPos     = new Float32Array(N * 3);
-  const pCol     = new Float32Array(N * 3);
-
-  for(let i = 0; i < N; i++){
-    const angle  = Math.random() * Math.PI * 2;
-    const radius = 1.5 + Math.random() * 10;
-    pPos[i*3]   = Math.cos(angle) * radius;
-    pPos[i*3+1] = Math.sin(angle) * radius;
-    pPos[i*3+2] = (Math.random() - 0.2) * 160;
-    const t = Math.random();
-    const c = t < 0.55 ? C_ORANGE : (t < 0.8 ? C_AMBER : C_WHITE);
+  var N=isMobile?900:1800;
+  var pGeo=new THREE.BufferGeometry();
+  var pPos=new Float32Array(N*3), pCol=new Float32Array(N*3);
+  for(var i=0;i<N;i++){
+    var a=Math.random()*Math.PI*2, r=1.5+Math.random()*10;
+    pPos[i*3]=Math.cos(a)*r; pPos[i*3+1]=Math.sin(a)*r; pPos[i*3+2]=(Math.random()-.2)*160;
+    var t=Math.random(), c=t<.55?C_ORANGE:(t<.80?C_AMBER:C_WHITE);
     pCol[i*3]=c.r; pCol[i*3+1]=c.g; pCol[i*3+2]=c.b;
   }
-  pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
-  pGeo.setAttribute('color',    new THREE.BufferAttribute(pCol, 3));
-
-  const pMat  = new THREE.PointsMaterial({
-    size: isMobile ? 0.07 : 0.055,
-    vertexColors: true, transparent: true, opacity: 0.70, sizeAttenuation: true,
-  });
-  scene.add(new THREE.Points(pGeo, pMat));
+  pGeo.setAttribute('position',new THREE.BufferAttribute(pPos,3));
+  pGeo.setAttribute('color',   new THREE.BufferAttribute(pCol,3));
+  scene.add(new THREE.Points(pGeo,new THREE.PointsMaterial({
+    size:isMobile?.07:.055,vertexColors:true,transparent:true,opacity:.70,sizeAttenuation:true
+  })));
 
   // ── DEPTH STREAKS ─────────────────────────────────────────────────────────
-  const streakCount = isMobile ? 10 : 20;
-  for(let i = 0; i < streakCount; i++){
-    const angle = (i / streakCount) * Math.PI * 2;
-    const r     = 5 + Math.random() * 5;
-    const zS    = -8  - Math.random() * 70;
-    const zE    = zS  - 6 - Math.random() * 18;
-    const pts   = [
-      new THREE.Vector3(Math.cos(angle)*r,     Math.sin(angle)*r,     zS),
-      new THREE.Vector3(Math.cos(angle)*r*0.5, Math.sin(angle)*r*0.5, zE),
-    ];
-    const geo = new THREE.BufferGeometry().setFromPoints(pts);
-    const col = i % 2 === 0 ? C_ORANGE : C_AMBER;
-    scene.add(new THREE.Line(geo, new THREE.LineBasicMaterial({ color: col, transparent: true, opacity: 0.14 })));
+  var sN=isMobile?10:20;
+  for(var si=0;si<sN;si++){
+    var sa=(si/sN)*Math.PI*2, sr=5+Math.random()*5;
+    var zS=-8-Math.random()*70, zE=zS-6-Math.random()*18;
+    var pts=[new THREE.Vector3(Math.cos(sa)*sr,Math.sin(sa)*sr,zS),
+             new THREE.Vector3(Math.cos(sa)*sr*.5,Math.sin(sa)*sr*.5,zE)];
+    scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),
+      new THREE.LineBasicMaterial({color:si%2?C_AMBER:C_ORANGE,transparent:true,opacity:.13})));
   }
 
-  // ── 3D CURSOR SPHERE (follows mouse in hero plane) ────────────────────────
-  // A glowing orb in 3D space that tracks the mouse — its screen-space
-  // position illuminates nearby HTML elements.
-  const orbGeo  = new THREE.SphereGeometry(0.12, 8, 8);
-  const orbMat  = new THREE.MeshBasicMaterial({ color: C_ORANGE, transparent: true, opacity: 0.0 });
-  const orb     = new THREE.Mesh(orbGeo, orbMat);
-  orb.position.set(0, 0, -3);
-  scene.add(orb);
+  // ── 3D CURSOR ORB ─────────────────────────────────────────────────────────
+  var orbMesh=new THREE.Mesh(new THREE.SphereGeometry(0.13,10,10),
+    new THREE.MeshBasicMaterial({color:C_ORANGE,transparent:true,opacity:0}));
+  var haloMesh=new THREE.Mesh(new THREE.TorusGeometry(0.26,0.013,8,32),
+    new THREE.MeshBasicMaterial({color:C_AMBER,transparent:true,opacity:0}));
+  orbMesh.add(haloMesh); scene.add(orbMesh);
+  orbMesh.position.set(0,0,-3);
 
-  // Orb ring
-  const ringGeo = new THREE.TorusGeometry(0.22, 0.012, 8, 32);
-  const ringMat = new THREE.MeshBasicMaterial({ color: C_AMBER, transparent: true, opacity: 0.0 });
-  const ring    = new THREE.Mesh(ringGeo, ringMat);
-  orb.add(ring);
+  // ── HTML INJECTIONS ───────────────────────────────────────────────────────
+  var heroEl = document.querySelector('.hero');
+  var glowEl = document.createElement('div');
+  glowEl.id  = 'hero-cursor-glow'; heroEl.appendChild(glowEl);
+  var frameLabel = document.createElement('div');
+  frameLabel.id  = 'hero-frame-label'; frameLabel.textContent = '▶ THUMBNAIL';
+  heroEl.appendChild(frameLabel);
 
-  // ── HTML glow cursor overlay ──────────────────────────────────────────────
-  const glowEl   = document.createElement('div');
-  glowEl.id      = 'hero-cursor-glow';
-  document.querySelector('.hero').appendChild(glowEl);
+  // ── STATE ─────────────────────────────────────────────────────────────────
+  var mouseX=0,mouseY=0,rawMX=0,rawMY=0,smoothMX=0,smoothMY=0;
+  var targetCamZ=0, camZ=prefersRM?0:9;
+  var orbOpacity=0, idleTimer=0, lastMouseX=0;
+  var TUNNEL=156;
 
-  // Frame-activation label
-  const frameLabel = document.createElement('div');
-  frameLabel.id    = 'hero-frame-label';
-  frameLabel.textContent = '▶ THUMBNAIL';
-  document.querySelector('.hero').appendChild(frameLabel);
-
-  // ── INPUT STATE ───────────────────────────────────────────────────────────
-  let mouseX = 0, mouseY = 0;     // normalised -1..+1
-  let rawMX  = 0, rawMY  = 0;     // px in hero
-  let smoothMX = 0, smoothMY = 0;
-  let targetCamZ = 0, camZ = 0;
-  const TUNNEL = 156;
-
-  // Mouse / touch
-  function onMouseMove(e){
-    const rect = document.querySelector('.hero').getBoundingClientRect();
-    const cx   = (e.clientX ?? e.touches?.[0]?.clientX) ?? 0;
-    const cy   = (e.clientY ?? e.touches?.[0]?.clientY) ?? 0;
-    mouseX = (cx / window.innerWidth  - 0.5) * 2;
-    mouseY = (cy / window.innerHeight - 0.5) * 2;
-    rawMX  = cx - rect.left;
-    rawMY  = cy - rect.top;
-    // Move HTML glow
-    if(!isMobile){
-      glowEl.style.left = rawMX + 'px';
-      glowEl.style.top  = rawMY + 'px';
-    }
+  function onMouse(e){
+    var rect=heroEl.getBoundingClientRect();
+    var cx=(e.clientX||(e.touches&&e.touches[0]&&e.touches[0].clientX)||0);
+    var cy=(e.clientY||(e.touches&&e.touches[0]&&e.touches[0].clientY)||0);
+    mouseX=(cx/window.innerWidth-.5)*2;
+    mouseY=(cy/window.innerHeight-.5)*2;
+    rawMX=cx-rect.left; rawMY=cy-rect.top;
+    if(!isMobile){glowEl.style.left=rawMX+'px';glowEl.style.top=rawMY+'px';}
   }
+  if(!isMobile){ window.addEventListener('mousemove',onMouse,{passive:true}); }
+  else { window.addEventListener('deviceorientation',function(e){
+    mouseX=Math.max(-1,Math.min(1,(e.gamma||0)/20));
+    mouseY=Math.max(-1,Math.min(1,(e.beta ||0)/20));
+  },{passive:true}); }
 
-  if(!isMobile){
-    window.addEventListener('mousemove', onMouseMove, { passive: true });
-  } else {
-    // Gyroscope parallax on mobile
-    window.addEventListener('deviceorientation', e => {
-      mouseX = Math.max(-1, Math.min(1, (e.gamma || 0) / 20));
-      mouseY = Math.max(-1, Math.min(1, (e.beta  || 0) / 20));
-    }, { passive: true });
-  }
+  window.addEventListener('scroll',function(){
+    var hp=document.getElementById('page-home');
+    if(!hp||!hp.classList.contains('active')) return;
+    var pageH=Math.max(document.body.scrollHeight-window.innerHeight,1);
+    targetCamZ=-(Math.min(window.scrollY/pageH,1))*TUNNEL;
+  },{passive:true});
 
-  // Scroll → camera Z
-  function updateScroll(){
-    const hp = document.getElementById('page-home');
-    if(!hp || !hp.classList.contains('active')) return;
-    const pageH    = Math.max(document.body.scrollHeight - window.innerHeight, 1);
-    const progress = Math.min(window.scrollY / pageH, 1);
-    targetCamZ     = -progress * TUNNEL;
-  }
-  window.addEventListener('scroll', updateScroll, { passive: true });
-
-  // ── CSS PARALLAX LAYERS ───────────────────────────────────────────────────
-  // Each hero element lives at a different virtual "depth".
-  // Mouse tilt shifts them by depth × strength.
-  const PARALLAX = [
-    { sel: '.hero-badge',       depth: 0.22 },
-    { sel: '.hero-title',       depth: 0.18 },
-    { sel: '.hero-subtitle',    depth: 0.14 },
-    { sel: '.hero-roles',       depth: 0.12 },
-    { sel: '.hero-desc',        depth: 0.08 },
-    { sel: '.hero-proof',       depth: 0.06 },
-    { sel: '.hero-actions',     depth: 0.04 },
-    { sel: '.guarantee-badge',  depth: 0.03 },
-    { sel: '.home-web-teaser',  depth: 0.02 },
-    { sel: '.teaser-btn',       depth: 0.02 },
+  // ── CSS PARALLAX + MAGNETIC ───────────────────────────────────────────────
+  var PARALLAX=[
+    {sel:'.hero-badge',    d:0.22,r:0.8},
+    {sel:'.hero-title',    d:0.18,r:0.6},
+    {sel:'.hero-subtitle', d:0.14,r:0.4},
+    {sel:'.hero-roles',    d:0.11,r:0.3},
+    {sel:'.hero-desc',     d:0.08,r:0.2},
+    {sel:'.hero-actions',  d:0.05,r:0.1},
+    {sel:'.guarantee-badge',d:0.04,r:0.0},
+    {sel:'.home-web-teaser',d:0.03,r:0.0},
+    {sel:'.teaser-btn',    d:0.02,r:0.0},
   ];
 
-  function applyParallax(mx, my){
-    if(isMobile) return;
-    PARALLAX.forEach(({ sel, depth }) => {
-      const el = document.querySelector(sel);
-      if(!el) return;
-      const tx = mx * depth * 28;   // px
-      const ty = my * depth * 16;
-      el.style.transform = `translate(${tx}px,${ty}px)`;
+  function applyParallax(mx,my){
+    if(isMobile||prefersRM) return;
+    PARALLAX.forEach(function(p){
+      var el=document.querySelector(p.sel); if(!el) return;
+      var tx=mx*p.d*30, ty=my*p.d*18;
+      var rx=my*p.r*.4,  ry=mx*p.r*.4;
+      el.style.transform='translate('+tx+'px,'+ty+'px) rotateX('+rx+'deg) rotateY('+ry+'deg)';
     });
   }
 
-  // ── FRAME ACTIVATION ──────────────────────────────────────────────────────
-  // When camera is close to a frame, brighten its border.
-  function updateFrameActivation(camZv){
-    let closestDist = 999, closestIdx = -1;
-    frameObjects.forEach((fo, i) => {
-      const dist = Math.abs(camZv - fo.z);
-      if(dist < closestDist){ closestDist = dist; closestIdx = i; }
+  function magneticCTA(mx,my){
+    if(isMobile||prefersRM) return;
+    document.querySelectorAll('.btn-primary,.btn-ghost').forEach(function(btn){
+      var rect=btn.getBoundingClientRect();
+      var bx=(rect.left+rect.right)/2/window.innerWidth*2-1;
+      var by=(rect.top +rect.bottom)/2/window.innerHeight*2-1;
+      var dx=mx-bx, dy=my-by;
+      var dist=Math.sqrt(dx*dx+dy*dy);
+      btn.style.transform=(dist<0.35)?
+        'translate('+(dx*(0.35-dist)/0.35*10)+'px,'+(dy*(0.35-dist)/0.35*6)+'px)':'';
     });
-
-    frameObjects.forEach((fo, i) => {
-      const isClose = i === closestIdx && closestDist < 14;
-      const target  = isClose ? Math.min(fo.baseBorderOpacity * 2.5, 1) : fo.baseBorderOpacity;
-      fo.borderMat.opacity += (target - fo.borderMat.opacity) * 0.08;
-    });
-
-    // Show "▶ THUMBNAIL" label when close
-    frameLabel.style.opacity = (closestDist < 10) ? '0.6' : '0';
   }
 
-  // ── ORB / GLOW OPACITY ────────────────────────────────────────────────────
-  // Fade in when mouse moves, fade out after idle
-  let orbOpacity = 0, idleTimer = 0, lastMX = 0;
+  function updateFrames(camZv){
+    var min=999, idx=-1;
+    frameObjects.forEach(function(f,i){var d=Math.abs(camZv-f.z);if(d<min){min=d;idx=i;}});
+    frameObjects.forEach(function(f,i){
+      var tgt=(i===idx&&min<14)?Math.min(f.base*2.4,1):f.base;
+      f.mat.opacity+=(tgt-f.mat.opacity)*0.08;
+    });
+    frameLabel.style.opacity=(min<10)?'0.6':'0';
+  }
 
   // ── RENDER LOOP ───────────────────────────────────────────────────────────
-  let clock = 0;
+  var clock=0;
   function animate(){
     requestAnimationFrame(animate);
-    clock += 0.007;
+    clock+=0.007;
+    var hp=document.getElementById('page-home');
+    if(!hp||!hp.classList.contains('active')) return;
 
-    const hp = document.getElementById('page-home');
-    if(!hp || !hp.classList.contains('active')) return;
+    // Intro zoom + scroll
+    camZ+=(targetCamZ-camZ)*(camZ>5?0.025:0.038);
+    camera.position.z=camZ;
 
-    // Camera smooth follow
-    camZ += (targetCamZ - camZ) * 0.038;
-    camera.position.z = camZ;
+    smoothMX+=(mouseX-smoothMX)*0.07;
+    smoothMY+=(mouseY-smoothMY)*0.07;
+    camera.rotation.y= smoothMX*0.07;
+    camera.rotation.x=-smoothMY*0.045;
+    camera.position.y=Math.sin(clock*0.6)*0.05;
 
-    // Mouse smooth
-    smoothMX += (mouseX - smoothMX) * 0.07;
-    smoothMY += (mouseY - smoothMY) * 0.07;
+    orbMesh.position.x+=(smoothMX*3.5-orbMesh.position.x)*0.08;
+    orbMesh.position.y+=(-smoothMY*2.0-orbMesh.position.y)*0.08;
+    haloMesh.rotation.z=clock*0.9;
 
-    // Camera tilt
-    camera.rotation.y  =  smoothMX * 0.07;
-    camera.rotation.x  = -smoothMY * 0.045;
-    camera.position.y  =  Math.sin(clock * 0.6) * 0.05;
+    var moving=Math.abs(mouseX-lastMouseX)>0.001;
+    if(moving){orbOpacity=Math.min(orbOpacity+0.04,0.38);idleTimer=0;}
+    else{idleTimer++;if(idleTimer>90)orbOpacity=Math.max(orbOpacity-0.008,0);}
+    lastMouseX=mouseX;
+    orbMesh.material.opacity =orbOpacity;
+    haloMesh.material.opacity=orbOpacity*0.65;
+    glowEl.style.opacity=(orbOpacity*2.5).toString();
 
-    // Orb follow mouse in 3D
-    const orbX = smoothMX * 3.5;
-    const orbY = -smoothMY * 2.0;
-    orb.position.x += (orbX - orb.position.x) * 0.08;
-    orb.position.y += (orbY - orb.position.y) * 0.08;
-    ring.rotation.z = clock * 0.8;
+    orbitals.forEach(function(o){
+      o.rotation.x+=0.008*o._spd; o.rotation.y+=0.012*o._spd;
+      o.position.y=o._origY+Math.sin(clock*o._spd+o._origY)*0.25;
+    });
 
-    // Orb opacity — brighter when mouse is active
-    const moving = Math.abs(mouseX - lastMX) > 0.001;
-    if(moving){ orbOpacity = Math.min(orbOpacity + 0.04, 0.35); idleTimer = 0; }
-    else       { idleTimer++; if(idleTimer > 80) orbOpacity = Math.max(orbOpacity - 0.01, 0); }
-    lastMX = mouseX;
-    orbMat.opacity  = orbOpacity;
-    ringMat.opacity = orbOpacity * 0.7;
-
-    // CSS parallax
-    applyParallax(smoothMX, smoothMY);
-
-    // Frame activation
-    updateFrameActivation(camZ);
-
-    // Slow frame group drift
-    frameGroup.rotation.z = Math.sin(clock * 0.35) * 0.006;
-
-    renderer.render(scene, camera);
+    applyParallax(smoothMX,smoothMY);
+    magneticCTA(mouseX,mouseY);
+    updateFrames(camZ);
+    frameGroup.rotation.z=Math.sin(clock*0.35)*0.006;
+    renderer.render(scene,camera);
   }
   animate();
 
-  // ── RESIZE ────────────────────────────────────────────────────────────────
-  function onResize(){
-    const w = container.offsetWidth  || window.innerWidth;
-    const h = container.offsetHeight || window.innerHeight;
-    camera.aspect = w / h;
-    camera.fov    = window.innerWidth < 768 ? 65 : 55;
-    camera.updateProjectionMatrix();
-    renderer.setSize(w, h);
-  }
-  window.addEventListener('resize', onResize);
+  window.addEventListener('resize',function(){
+    var w=container.offsetWidth||window.innerWidth;
+    var h=container.offsetHeight||window.innerHeight;
+    camera.aspect=w/h; camera.fov=window.innerWidth<768?65:55;
+    camera.updateProjectionMatrix(); renderer.setSize(w,h);
+  });
 
-  // Scroll to top when home shows (SPA re-entry resets camera)
-  const origShowPage = window.showPage;
-  if(origShowPage){
-    window.showPage = function(id, ...args){
-      const result = origShowPage(id, ...args);
-      if(id === 'home'){ targetCamZ = 0; }
-      return result;
-    };
-  }
+  var _orig=window.showPage;
+  if(_orig){ window.showPage=function(id){var r=_orig.apply(this,arguments);if(id==='home')targetCamZ=0;return r;}; }
 
 })(); // end initHero3D
 
@@ -2532,6 +2661,14 @@ const proofObserver = new IntersectionObserver(entries=>{
 },{threshold:0.5});
 const proofEl = document.querySelector('.hero-proof');
 if(proofEl) proofObserver.observe(proofEl);
+
+/* ══ ARTICLE TABS ══ */
+function switchArticleTab(btn, cat) {
+  document.querySelectorAll('.articles-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.articles-section').forEach(s => s.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('articles-' + cat).classList.add('active');
+}
 
 /* ══ BOOKING FORM — Web3Forms ══ */
 async function submitBooking(e) {
